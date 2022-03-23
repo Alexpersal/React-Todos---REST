@@ -1,9 +1,11 @@
-//import "./App.css";
+import "./App.css";
 import { useRef } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 
-function AfegirTodo() {
+const ENDPOINT = "https://tc-todo-2022.herokuapp.com/todos";
+
+function AfegirTodo({ OnTodoAdded }) {
   const titleRef = useRef();
 
   return (
@@ -11,7 +13,15 @@ function AfegirTodo() {
       onSubmit={(e) => {
         e.preventDefault();
         const title = titleRef.current.value;
-        console.log(title);
+        titleRef.current.value = "";
+        fetch(ENDPOINT, {
+          method: "POST",
+          body: JSON.stringify({
+            title,
+          }),
+        })
+          .then((response) => response.json())
+          .then((json) => OnTodoAdded(json));
       }}
     >
       <input ref={titleRef} />
@@ -20,11 +30,29 @@ function AfegirTodo() {
   );
 }
 
+function TodoItem({ todo, onUpdated }) {
+  return (
+    <li
+      className={todo.completed ? "completed" : "pending"}
+      onClick={() => {
+        fetch(`${ENDPOINT}/${todo.id}`, {
+          method: "POST",
+          body: JSON.stringify({ completed: !todo.completed }),
+        })
+          .then((response) => response.json())
+          .then((json) => onUpdated(json));
+      }}
+    >
+      {todo.title}
+    </li>
+  );
+}
+
 export default function App() {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    fetch("https://tc-todo-2022.herokuapp.com/todos")
+    fetch(ENDPOINT)
       .then((response) => response.json())
       .then((json) => setTodos(json));
   }, []);
@@ -34,10 +62,20 @@ export default function App() {
       <h1>Llista de TODOS</h1>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.title}</li>
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            onUpdated={(updatedTodo) =>
+              setTodos(
+                todos.map((currentTodo) =>
+                  currentTodo.id === updatedTodo.id ? updatedTodo : currentTodo
+                )
+              )
+            }
+          />
         ))}
       </ul>
-      <AfegirTodo />
+      <AfegirTodo OnTodoAdded={(todo) => setTodos([...todos, todo])} />
     </div>
   );
 }
