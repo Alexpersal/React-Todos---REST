@@ -48,18 +48,26 @@ function TodoItem({ todo, onUpdated }) {
   );
 }
 
+export function getTodos() {
+  return fetch(ENDPOINT).then((response) => response.json());
+}
+
 export default function App() {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    fetch(ENDPOINT)
-      .then((response) => response.json())
-      .then((json) => setTodos(json));
+    getTodos().then(setTodos);
+
+    const intervalID = setInterval(() => {
+      getTodos().then(setTodos);
+    }, 1000);
+    return () => clearInterval(intervalID);
   }, []);
 
   return (
     <div className="App">
       <h1>Llista de TODOS</h1>
+      <button onClick={() => getTodos().then(setTodos)}>Refresh</button>
       <ul>
         {todos.map((todo) => (
           <TodoItem
