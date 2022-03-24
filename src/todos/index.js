@@ -6,7 +6,7 @@ import { getTodos } from "./todosApi";
 
 const initialState = [];
 
-function reducerTodos(state = initialState, action) {
+function reduceTodos(state = initialState, action) {
   switch (action.type) {
     case "ADD_TODO":
       return [...state, action.todo];
@@ -20,20 +20,19 @@ function reducerTodos(state = initialState, action) {
 }
 export function Todos() {
   const [todos, setTodos] = useState(initialState);
-  const loadTodos = () => getTodos().then((allTodos) => setTodos(allTodos));
 
   useEffect(() => {
     loadTodos();
-
     const intervalID = setInterval(() => loadTodos, 6000);
     return () => clearInterval(intervalID);
   }, []);
 
+  const loadTodos = () => getTodos().then((allTodos) => setTodos(allTodos));
   const onTodoAdded = (todo) =>
-    setTodos(reducerTodos(todos, { type: "ADD_TODO", todo }));
+    setTodos(reduceTodos(todos, { type: "ADD_TODO", todo }));
 
   const onTodoUpdated = (updatedTodo) =>
-    setTodos(reducerTodos(todos, { type: "UPDATE_TODO", todo: updatedTodo }));
+    setTodos(reduceTodos(todos, { type: "UPDATE_TODO", todo: updatedTodo }));
 
   return (
     <div className="App">
