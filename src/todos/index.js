@@ -1,2 +1,5 @@
-export { Todos } from "./Todos";
-//React and Rest D3. Cleaning & useReduce min 22:34
+export * from "./Todos";
+export * from "./reducers";
+export * from "./todosApi";
+export * from "./actions";
+export * from "./middleware";
