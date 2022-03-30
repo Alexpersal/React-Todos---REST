@@ -4,18 +4,16 @@ export async function getTodos() {
   return fetch(ENDPOINT).then((response) => response.json());
 }
 
-export async function PostNewTodo(title) {
+export async function postNewTodo(todo) {
   return fetch(ENDPOINT, {
     method: "POST",
-    body: JSON.stringify({
-      title,
-    }),
+    body: JSON.stringify(todo),
   }).then((response) => response.json());
 }
 
 export async function postUpdateTodo(todo) {
   return fetch(`${ENDPOINT}/${todo.id}`, {
     method: "POST",
-    body: JSON.stringify({ completed: !todo.completed }),
+    body: JSON.stringify(todo),
   }).then((response) => response.json());
 }

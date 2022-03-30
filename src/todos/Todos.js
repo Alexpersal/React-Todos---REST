@@ -1,12 +1,9 @@
 import { useEffect } from "react";
 import { AfegirTodo } from "./AfegirTodo";
-import { addTodo, updateTodo, requestTodos } from "./actions";
+import { requestAddTodo, requestUpdateTodo, requestTodos } from "./actions";
 import { TodoList } from "./TodoList";
 import { useDispatch, useSelector } from "react-redux";
-
-function selectTodos(state) {
-  return state.todos;
-}
+import { selectTodos } from "./selectors";
 
 export function Todos() {
   const todos = useSelector(selectTodos);
@@ -18,16 +15,16 @@ export function Todos() {
   }, []);
 
   const loadTodos = () => dispatch(requestTodos());
-  const onTodoAdded = (todo) => dispatch(addTodo(todo));
+  const onAddTodo = (todo) => dispatch(requestAddTodo(todo));
 
-  const onTodoUpdated = (todo) => dispatch(updateTodo(todo));
+  const onTodoUpdate = (todo) => dispatch(requestUpdateTodo(todo));
 
   return (
     <div className="App">
       <h1>Llista de TODOS</h1>
       <button onClick={loadTodos}>Refresh</button>
-      <TodoList todos={todos} onUpdated={onTodoUpdated} />
-      <AfegirTodo OnTodoAdded={onTodoAdded} />
+      <TodoList todos={todos} onTodoUpdate={onTodoUpdate} />
+      <AfegirTodo onAddTodo={onAddTodo} />
     </div>
   );
 }

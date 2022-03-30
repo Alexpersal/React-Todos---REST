@@ -1,12 +1,8 @@
-import { postUpdateTodo } from "./todosApi";
-
-export function TodoItem({ todo, onUpdated }) {
+export function TodoItem({ todo, onTodoUpdate }) {
   return (
     <li
       className={todo.completed ? "completed" : "pending"}
-      onClick={() => {
-        postUpdateTodo(todo).then((json) => onUpdated(json));
-      }}
+      onClick={() => onTodoUpdate({ ...todo, completed: !todo.completed })}
     >
       {todo.title}
     </li>

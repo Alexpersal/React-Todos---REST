@@ -1,7 +1,6 @@
 import { useRef } from "react";
-import { PostNewTodo } from "./todosApi";
 
-export function AfegirTodo({ OnTodoAdded }) {
+export function AfegirTodo({ onAddTodo }) {
   const titleRef = useRef();
   return (
     <form
@@ -9,7 +8,7 @@ export function AfegirTodo({ OnTodoAdded }) {
         e.preventDefault();
         const title = titleRef.current.value;
         titleRef.current.value = "";
-        PostNewTodo(title).then((json) => OnTodoAdded(json));
+        onAddTodo({ title });
       }}
     >
       <input ref={titleRef} />
